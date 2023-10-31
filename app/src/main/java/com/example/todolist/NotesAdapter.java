@@ -10,13 +10,14 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
 
-	private ArrayList<Note> notes = new ArrayList<>();
+	private List<Note> notes = new ArrayList<>();
 	private OnNoteClickListener onNoteClickListener;
 
-	public ArrayList<Note> getNotes() {
+	public List<Note> getNotes() {
 		return new ArrayList<>(notes);
 	}
 
@@ -25,7 +26,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	}
 
 
-	public void setNotes(ArrayList<Note> notes) {
+	public void setNotes(List<Note> notes) {
 		this.notes = notes;
 		notifyDataSetChanged();
 	}
@@ -70,9 +71,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		return notes.size();
 	}
 
-	class NotesViewHolder extends RecyclerView.ViewHolder {
+	static class NotesViewHolder extends RecyclerView.ViewHolder {
 
-		private TextView textViewNote;
+		private final TextView textViewNote;
 
 		public NotesViewHolder(@NonNull View itemView) {
 			super(itemView);
