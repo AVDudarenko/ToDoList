@@ -20,6 +20,8 @@ public class SaveNoteActivity extends AppCompatActivity {
 	private RadioButton rbMediumPriority;
 	private Button btnSave;
 
+	private Database database = Database.getInstance();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,9 +37,14 @@ public class SaveNoteActivity extends AppCompatActivity {
 
 		String text = etNoteText.getText().toString().trim();
 		int priority = getPriority();
+		int id = database.getNotes().size();
 
 		if (text.isEmpty()) {
 			Toast.makeText(this, R.string.empty_note_field, Toast.LENGTH_SHORT).show();
+		} else {
+			Note note = new Note(id, text, priority);
+			database.add(note);
+			finish();
 		}
 
 	}
