@@ -31,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
 		});
 		rvNotes.setAdapter(notesAdapter);
 
+		noteDataBase.notesDAO().getNotes().observe(
+				this,
+				notes -> notesAdapter.setNotes(notes)
+		);
+
 		ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
 				new ItemTouchHelper.SimpleCallback(
 						0,
@@ -51,8 +56,12 @@ public class MainActivity extends AppCompatActivity {
 							int direction
 					) {
 						int position = viewHolder.getAdapterPosition();
-						noteDataBase.notesDAO().delete(position);
-						showNotes();
+						Note note = notesAdapter.getNotes().get(position);
+
+						Thread thread = new Thread(() -> {
+							noteDataBase.notesDAO().delete(note.getId());
+						});
+						thread.start();
 					}
 				});
 
@@ -63,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		showNotes();
 	}
 
 	private void addNote() {
@@ -74,9 +82,5 @@ public class MainActivity extends AppCompatActivity {
 	private void initViews() {
 		rvNotes = findViewById(R.id.rvNotes);
 		btnAddNote = findViewById(R.id.btnAddNote);
-	}
-
-	private void showNotes() {
-		notesAdapter.setNotes(noteDataBase.notesDAO().getNotes());
 	}
 }
