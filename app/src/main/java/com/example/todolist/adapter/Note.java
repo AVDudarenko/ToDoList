@@ -1,4 +1,4 @@
-package com.example.todolist;
+package com.example.todolist.adapter;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;

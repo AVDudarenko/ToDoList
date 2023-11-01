@@ -1,13 +1,18 @@
-package com.example.todolist;
+package com.example.todolist.main;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todolist.adapter.Note;
+import com.example.todolist.adapter.NotesAdapter;
+import com.example.todolist.R;
+import com.example.todolist.note.CreateNoteActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,23 +20,21 @@ public class MainActivity extends AppCompatActivity {
 	private RecyclerView rvNotes;
 	private FloatingActionButton btnAddNote;
 	private NotesAdapter notesAdapter;
+	private MainViewModel mainViewModel;
 
-	private NoteDataBase noteDataBase;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-		noteDataBase = NoteDataBase.getInstance(getApplication());
 		initViews();
 
 		notesAdapter = new NotesAdapter();
-		notesAdapter.setOnNoteClickListener(note -> {
-		});
 		rvNotes.setAdapter(notesAdapter);
 
-		noteDataBase.notesDAO().getNotes().observe(
+		mainViewModel.getNotes().observe(
 				this,
 				notes -> notesAdapter.setNotes(notes)
 		);
@@ -58,10 +61,7 @@ public class MainActivity extends AppCompatActivity {
 						int position = viewHolder.getAdapterPosition();
 						Note note = notesAdapter.getNotes().get(position);
 
-						Thread thread = new Thread(() -> {
-							noteDataBase.notesDAO().delete(note.getId());
-						});
-						thread.start();
+						mainViewModel.delete(note);
 					}
 				});
 
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void addNote() {
-		Intent intent = SaveNoteActivity.newIntent(MainActivity.this);
+		Intent intent = CreateNoteActivity.newIntent(MainActivity.this);
 		startActivity(intent);
 	}
 

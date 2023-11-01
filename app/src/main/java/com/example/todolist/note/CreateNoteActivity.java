@@ -1,34 +1,42 @@
-package com.example.todolist;
+package com.example.todolist.note;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.todolist.R;
+import com.example.todolist.adapter.Note;
 
 
-public class SaveNoteActivity extends AppCompatActivity {
+public class CreateNoteActivity extends AppCompatActivity {
 
 	private EditText etNoteText;
 
 	private RadioButton rbLowPriority;
 	private RadioButton rbMediumPriority;
 	private Button btnSave;
-	private NoteDataBase noteDataBase;
-
-	private Handler handler = new Handler(Looper.getMainLooper());
+	private CreateNoteViewModel createNoteViewModel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_save_note);
-		noteDataBase = NoteDataBase.getInstance(getApplication());
+		createNoteViewModel = new ViewModelProvider(this).get(CreateNoteViewModel.class);
+		createNoteViewModel.getShouldCloseScreen().observe(
+				this,
+				shouldClose -> {
+					if (shouldClose) {
+						finish();
+					}
+				}
+		);
 		initViews();
 		btnSave.setOnClickListener(v -> {
 			saveNewNote();
@@ -45,11 +53,7 @@ public class SaveNoteActivity extends AppCompatActivity {
 		if (text.isEmpty()) {
 			Toast.makeText(this, R.string.empty_note_field, Toast.LENGTH_SHORT).show();
 		} else {
-			Thread thread = new Thread(() -> {
-				noteDataBase.notesDAO().add(note);
-				handler.post(this::finish);
-			});
-			thread.start();
+			createNoteViewModel.saveNote(note);
 		}
 
 	}
@@ -76,7 +80,7 @@ public class SaveNoteActivity extends AppCompatActivity {
 	}
 
 	public static Intent newIntent(Context context) {
-		return new Intent(context, SaveNoteActivity.class);
+		return new Intent(context, CreateNoteActivity.class);
 	}
 
 }
