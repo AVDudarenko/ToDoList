@@ -1,4 +1,6 @@
-package com.example.todolist;
+package com.example.todolist.db;
+
+import com.example.todolist.adapter.Note;
 
 import java.util.ArrayList;
 import java.util.Random;

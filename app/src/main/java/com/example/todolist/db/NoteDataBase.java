@@ -1,10 +1,12 @@
-package com.example.todolist;
+package com.example.todolist.db;
 
 import android.app.Application;
 
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+
+import com.example.todolist.adapter.Note;
 
 @Database(entities = {Note.class}, version = 1)
 public abstract class NoteDataBase extends RoomDatabase {
